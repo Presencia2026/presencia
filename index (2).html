@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Presencia</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inconsolata:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --tierra: #1a1410;
+    --crema: #f0e8d8;
+    --arena: #c8b898;
+    --ocre: #8b6914;
+    --ocre-claro: #b8920a;
+    --gris: #6b6258;
+    --blanco: #faf6f0;
+    --negro: #0d0b08;
+    --rojo-oriental: #8b1a1a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--tierra);
+    color: var(--crema);
+    font-family: 'Libre Baskerville', Georgia, serif;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* ── TEXTURA DE FONDO ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+      radial-gradient(ellipse at 20% 50%, rgba(139,105,20,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(139,26,26,0.04) 0%, transparent 50%),
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── NAVEGACIÓN ── */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 24px 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(to bottom, rgba(26,20,16,0.95) 0%, transparent 100%);
+  }
+
+  .nav-marca {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 300;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    color: var(--crema);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'Inconsolata', monospace;
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--arena);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .nav-links a:hover { color: var(--crema); }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 120px 60px 80px;
+    z-index: 1;
+  }
+
+  .hero-linea-deco {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 1px;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent, var(--ocre), transparent);
+    opacity: 0.3;
+  }
+
+  .hero-numero {
+    font-family: 'Inconsolata', monospace;
+    font-size: 11px;
+    letter-spacing: 5px;
+    color: var(--ocre);
+    text-transform: uppercase;
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: aparecer 1s ease 0.3s forwards;
+  }
+
+  .hero-titulo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(80px, 14vw, 180px);
+    font-weight: 300;
+    line-height: 0.85;
+    color: var(--crema);
+    letter-spacing: -2px;
+    opacity: 0;
+    animation: aparecer 1.2s ease 0.5s forwards;
+    position: relative;
+  }
+
+  .hero-titulo::after {
+    content: '';
+    position: absolute;
+    bottom: -16px;
+    left: 0;
+    width: 120px;
+    height: 1px;
+    background: var(--ocre);
+    opacity: 0.6;
+  }
+
+  .hero-cita-wrapper {
+    margin-top: 72px;
+    max-width: 680px;
+    opacity: 0;
+    animation: aparecer 1s ease 0.9s forwards;
+  }
+
+  .hero-cita {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(18px, 2.5vw, 26px);
+    font-weight: 300;
+    line-height: 1.7;
+    color: var(--arena);
+  }
+
+  .hero-cita strong {
+    color: var(--crema);
+    font-style: normal;
+    font-weight: 400;
+  }
+
+  .hero-cita-fuente {
+    margin-top: 20px;
+    font-family: 'Inconsolata', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--ocre);
+    text-transform: uppercase;
+  }
+
+  .hero-bajada {
+    margin-top: 48px;
+    max-width: 520px;
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 1.8;
+    color: var(--gris);
+    opacity: 0;
+    animation: aparecer 1s ease 1.2s forwards;
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 48px;
+    left: 60px;
+    font-family: 'Inconsolata', monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--gris);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    opacity: 0;
+    animation: aparecer 1s ease 1.6s forwards;
+  }
+
+  .hero-scroll::before {
+    content: '';
+    width: 40px;
+    height: 1px;
+    background: var(--gris);
+  }
+
+  /* ── SECCIÓN MANIFIESTO ── */
+  .seccion {
+    position: relative;
+    z-index: 1;
+    padding: 120px 60px;
+  }
+
+  .seccion-header {
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+    margin-bottom: 64px;
+  }
+
+  .seccion-num {
+    font-family: 'Inconsolata', monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--ocre);
+    text-transform: uppercase;
+    min-width: 60px;
+  }
+
+  .seccion-titulo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--crema);
+    border-bottom: 1px solid rgba(200,184,152,0.2);
+    padding-bottom: 24px;
+    flex: 1;
+  }
+
+  /* Manifiesto */
+  .manifiesto {
+    background: linear-gradient(to bottom, var(--tierra), #120e0a);
+  }
+
+  .manifiesto-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    max-width: 1100px;
+  }
+
+  .manifiesto-bloque {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .manifiesto-bloque-num {
+    font-family: 'Inconsolata', monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--ocre);
+  }
+
+  .manifiesto-bloque h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: var(--crema);
+    line-height: 1.2;
+  }
+
+  .manifiesto-bloque p {
+    font-size: 16px;
+    line-height: 1.85;
+    color: var(--arena);
+    font-weight: 400;
+  }
+
+  .manifiesto-bloque p strong {
+    color: var(--crema);
+    font-weight: 700;
+  }
+
+  .linea-divisora {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--ocre), transparent);
+    opacity: 0.3;
+    margin: 80px 0;
+  }
+
+  /* ── REFLEXIONES ── */
+  .reflexiones {
+    background: #120e0a;
+  }
+
+  .reflexiones-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-top: 16px;
+  }
+
+  .reflexion-card {
+    background: rgba(200,184,152,0.04);
+    border: 1px solid rgba(200,184,152,0.1);
+    padding: 40px 36px;
+    transition: background 0.4s, border-color 0.4s;
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+  }
+
+  .reflexion-card:hover {
+    background: rgba(200,184,152,0.08);
+    border-color: rgba(200,184,152,0.25);
+  }
+
+  .reflexion-fecha {
+    font-family: 'Inconsolata', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--ocre);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .reflexion-titulo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    font-weight: 400;
+    color: var(--crema);
+    line-height: 1.3;
+    margin-bottom: 16px;
+  }
+
+  .reflexion-extracto {
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--gris);
+  }
+
+  .reflexion-leer {
+    margin-top: 28px;
+    font-family: 'Inconsolata', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--ocre);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .reflexion-leer::after {
+    content: '→';
+    transition: transform 0.3s;
+  }
+
+  .reflexion-card:hover .reflexion-leer::after {
+    transform: translateX(6px);
+  }
+
+  /* ── SOBRE PRESENCIA ── */
+  .sobre {
+    background: var(--tierra);
+    border-top: 1px solid rgba(200,184,152,0.1);
+  }
+
+  .sobre-contenido {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .sobre-izq {
+    position: sticky;
+    top: 120px;
+  }
+
+  .sobre-izq p {
+    font-family: 'Inconsolata', monospace;
+    font-size: 12px;
+    letter-spacing: 3px;
+    color: var(--ocre);
+    text-transform: uppercase;
+    line-height: 1.8;
+  }
+
+  .sobre-der {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .sobre-der p {
+    font-size: 18px;
+    line-height: 1.9;
+    color: var(--arena);
+  }
+
+  .sobre-der p strong {
+    color: var(--crema);
+    font-weight: 700;
+  }
+
+  .sobre-der p em {
+    font-style: italic;
+    color: var(--crema);
+  }
+
+  .sobre-cita-destacada {
+    border-left: 2px solid var(--ocre);
+    padding: 24px 32px;
+    background: rgba(139,105,20,0.06);
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 22px;
+    line-height: 1.7;
+    color: var(--crema);
+  }
+
+  /* ── CONTACTO ── */
+  .contacto {
+    background: #0d0b08;
+    text-align: center;
+    padding: 120px 60px;
+  }
+
+  .contacto-titulo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(40px, 6vw, 80px);
+    font-weight: 300;
+    color: var(--crema);
+    margin-bottom: 24px;
+    line-height: 1.1;
+  }
+
+  .contacto-sub {
+    font-size: 17px;
+    color: var(--gris);
+    max-width: 480px;
+    margin: 0 auto 48px;
+    line-height: 1.75;
+  }
+
+  .contacto-form {
+    max-width: 480px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .contacto-input {
+    background: rgba(200,184,152,0.06);
+    border: 1px solid rgba(200,184,152,0.2);
+    padding: 16px 20px;
+    font-family: 'Libre Baskerville', serif;
+    font-size: 15px;
+    color: var(--crema);
+    outline: none;
+    transition: border-color 0.3s;
+    width: 100%;
+  }
+
+  .contacto-input::placeholder { color: var(--gris); }
+  .contacto-input:focus { border-color: var(--ocre); }
+
+  .contacto-textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+
+  .contacto-btn {
+    background: transparent;
+    border: 1px solid var(--ocre);
+    color: var(--ocre);
+    padding: 16px 40px;
+    font-family: 'Inconsolata', monospace;
+    font-size: 13px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+    align-self: center;
+  }
+
+  .contacto-btn:hover {
+    background: var(--ocre);
+    color: var(--tierra);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid rgba(200,184,152,0.1);
+    padding: 40px 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #0d0b08;
+  }
+
+  .footer-marca {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 300;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: var(--arena);
+  }
+
+  .footer-cita {
+    font-family: 'Inconsolata', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--gris);
+    max-width: 400px;
+    text-align: center;
+    line-height: 1.6;
+  }
+
+  .footer-año {
+    font-family: 'Inconsolata', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--gris);
+  }
+
+  /* ── MODAL REFLEXIÓN ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(13,11,8,0.95);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s;
+    padding: 40px;
+  }
+
+  .modal-overlay.abierto {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .modal {
+    max-width: 680px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+    background: #1a1410;
+    border: 1px solid rgba(200,184,152,0.15);
+    padding: 60px;
+    position: relative;
+    transform: translateY(20px);
+    transition: transform 0.4s;
+  }
+
+  .modal-overlay.abierto .modal {
+    transform: translateY(0);
+  }
+
+  .modal-cerrar {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    background: none;
+    border: none;
+    color: var(--gris);
+    font-family: 'Inconsolata', monospace;
+    font-size: 12px;
+    letter-spacing: 3px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+
+  .modal-cerrar:hover { color: var(--crema); }
+
+  .modal-fecha {
+    font-family: 'Inconsolata', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--ocre);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+
+  .modal-titulo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px;
+    font-weight: 400;
+    color: var(--crema);
+    line-height: 1.2;
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgba(200,184,152,0.15);
+  }
+
+  .modal-cuerpo {
+    font-size: 16px;
+    line-height: 1.9;
+    color: var(--arena);
+  }
+
+  .modal-cuerpo p { margin-bottom: 20px; }
+  .modal-cuerpo strong { color: var(--crema); }
+  .modal-cuerpo em { font-style: italic; color: var(--crema); }
+
+  /* ── ANIMACIONES ── */
+  @keyframes aparecer {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .revelar {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .revelar.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 20px 24px; }
+    .nav-links { display: none; }
+    .hero { padding: 100px 24px 60px; }
+    .seccion { padding: 80px 24px; }
+    .manifiesto-grid { grid-template-columns: 1fr; gap: 48px; }
+    .reflexiones-grid { grid-template-columns: 1fr; }
+    .sobre-contenido { grid-template-columns: 1fr; gap: 48px; }
+    .sobre-izq { position: static; }
+    footer { flex-direction: column; gap: 20px; text-align: center; }
+    .modal { padding: 40px 24px; }
+    .contacto { padding: 80px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#inicio" class="nav-marca">Presencia</a>
+  <ul class="nav-links">
+    <li><a href="#manifiesto">Manifiesto</a></li>
+    <li><a href="#reflexiones">Reflexiones</a></li>
+    <li><a href="#sobre">Sobre Presencia</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="inicio">
+  <div class="hero-linea-deco"></div>
+  <div class="hero-numero">República · Oriental · del · Uruguay</div>
+  <h1 class="hero-titulo">Presencia</h1>
+  <div class="hero-cita-wrapper">
+    <p class="hero-cita">
+      <strong>"Mi autoridad emana de vosotros</strong> y ella cesa<br>
+      ante vuestra presencia soberana."
+    </p>
+    <p class="hero-cita-fuente">— José Gervasio Artigas</p>
+  </div>
+  <p class="hero-bajada">
+    Un espacio para pensar Uruguay desde sus raíces. Para construir sin apuro lo que debe durar. Para que la soberanía deje de ser una promesa y se convierta en práctica cotidiana.
+  </p>
+  <div class="hero-scroll">Leer más</div>
+</section>
+
+<!-- MANIFIESTO -->
+<section class="seccion manifiesto" id="manifiesto">
+  <div class="seccion-header">
+    <span class="seccion-num">01</span>
+    <h2 class="seccion-titulo">Por qué Presencia</h2>
+  </div>
+
+  <div class="manifiesto-grid revelar">
+    <div class="manifiesto-bloque">
+      <span class="manifiesto-bloque-num">I</span>
+      <h3>La democracia no se hereda. Se ejerce.</h3>
+      <p>Uruguay tiene una de las democracias más antiguas de América Latina. Pero tener instituciones no es lo mismo que tener democracia real. La democracia real requiere ciudadanía activa, información accesible, y poder genuinamente distribuido. Hoy tenemos elecciones sin participación, transparencia sin legibilidad, y representantes que representan cada vez menos a quienes dicen representar.</p>
+    </div>
+
+    <div class="manifiesto-bloque">
+      <span class="manifiesto-bloque-num">II</span>
+      <h3>El trabajo cambió. El sistema no.</h3>
+      <p>Uruguay construyó su identidad sobre el trabajo. El batllismo y el artiguismo pusieron al trabajador en el centro del proyecto nacional. Pero el mundo del trabajo cambió radicalmente y el sistema político no lo vio. <strong>Hay gente que contribuye y no existe para el Estado.</strong> Hay gente que perdió su empleo a los cincuenta años y el sistema la llama desempleada cuando tiene décadas de experiencia que valen.</p>
+    </div>
+
+    <div class="manifiesto-bloque">
+      <span class="manifiesto-bloque-num">III</span>
+      <h3>La transparencia no es un valor. Es una condición.</h3>
+      <p>No podemos exigirle a la ciudadanía que confíe en el Estado si el Estado no muestra lo que hace, cómo gasta, y quién decide qué. La opacidad no es un accidente — es una decisión. Y se deshace también con decisiones: sistemas digitales, datos abiertos, declaraciones verificables. <strong>Lo que se mide públicamente no se puede esconder.</strong></p>
+    </div>
+
+    <div class="manifiesto-bloque">
+      <span class="manifiesto-bloque-num">IV</span>
+      <h3>Uruguay puede producir lo que necesita.</h3>
+      <p>Importamos lo que podríamos fabricar. Exportamos lo que otros procesan. Tenemos tierra, agua, inteligencia, conectividad — y seguimos siendo el patio trasero de fondos de inversión que se llevan el valor que producimos. <em>Hay otro modelo posible</em>, que no depende de la ideología sino de la decisión de usar lo que ya tenemos de manera diferente.</p>
+    </div>
+  </div>
+
+  <div class="linea-divisora"></div>
+
+  <div class="revelar" style="max-width:720px;">
+    <p style="font-family:'Cormorant Garamond',serif;font-size:clamp(20px,3vw,30px);font-weight:300;line-height:1.7;color:var(--arena);font-style:italic;">
+      Presencia no es un partido todavía. Es una conversación. Un espacio donde las ideas se prueban en público antes de convertirse en programa. Donde quien quiera puede leer, pensar, disentir y sumarse. <strong style="color:var(--crema);font-style:normal;">La soberanía empieza en el pensamiento.</strong>
+    </p>
+  </div>
+</section>
+
+<!-- REFLEXIONES -->
+<section class="seccion reflexiones" id="reflexiones">
+  <div class="seccion-header revelar">
+    <span class="seccion-num">02</span>
+    <h2 class="seccion-titulo">Reflexiones</h2>
+  </div>
+
+  <div class="reflexiones-grid revelar">
+
+    <a class="reflexion-card" onclick="abrirModal('r1')" href="#" onclick="return false;">
+      <div class="reflexion-fecha">Junio 2026</div>
+      <h3 class="reflexion-titulo">La camioneta y la carta de Oribe</h3>
+      <p class="reflexion-extracto">Hace 175 años un presidente uruguayo devolvió un regalo valioso porque entendía algo que hoy requiere leyes, organismos y convenciones internacionales: el poder y el regalo no se mezclan.</p>
+      <div class="reflexion-leer">Leer</div>
+    </a>
+
+    <a class="reflexion-card" onclick="abrirModal('r2')" href="#" onclick="return false;">
+      <div class="reflexion-fecha">Junio 2026</div>
+      <h3 class="reflexion-titulo">El trabajo que no existe para el Estado</h3>
+      <p class="reflexion-extracto">El cuidador de un familiar con discapacidad trabaja. El pescador artesanal trabaja. El trabajador de cincuenta años con décadas de experiencia trabaja. El Estado no los ve. Eso es una decisión, no un olvido.</p>
+      <div class="reflexion-leer">Leer</div>
+    </a>
+
+    <a class="reflexion-card" onclick="abrirModal('r3')" href="#" onclick="return false;">
+      <div class="reflexion-fecha">Junio 2026</div>
+      <h3 class="reflexion-titulo">La democracia no está en riesgo por la derecha</h3>
+      <p class="reflexion-extracto">Se dice que la democracia está amenazada por el avance de las derechas. Pero el riesgo más profundo es otro: que izquierda y derecha acuerden en lo que importa para perpetuarse en la alternancia. Eso no es democracia. Es circo electoral.</p>
+      <div class="reflexion-leer">Leer</div>
+    </a>
+
+  </div>
+</section>
+
+<!-- SOBRE PRESENCIA -->
+<section class="seccion sobre" id="sobre">
+  <div class="seccion-header revelar">
+    <span class="seccion-num">03</span>
+    <h2 class="seccion-titulo">Sobre Presencia</h2>
+  </div>
+
+  <div class="sobre-contenido revelar">
+    <div class="sobre-izq">
+      <p>
+        Soberanía<br><br>
+        Legitimidad<br><br>
+        Artiguismo<br><br>
+        Batllismo<br><br>
+        Presencia
+      </p>
+    </div>
+
+    <div class="sobre-der">
+      <p>
+        Presencia nace de una convicción simple: <strong>Uruguay tiene todo lo que necesita para ser distinto</strong>. Tiene historia democrática, tiene cultura de trabajo, tiene tierra, agua, inteligencia y conectividad. Lo que le falta no son recursos — le falta un sistema político que esté realmente al servicio de quienes dice representar.
+      </p>
+
+      <div class="sobre-cita-destacada">
+        "Mi autoridad emana de vosotros y ella cesa ante vuestra presencia soberana."<br>
+        <span style="font-family:'Inconsolata',monospace;font-size:12px;letter-spacing:2px;color:var(--ocre);font-style:normal;display:block;margin-top:16px;">— Artigas. 1813. Todavía pendiente.</span>
+      </div>
+
+      <p>
+        Artigas lo dijo en 1813. Doscientos años después la frase sigue siendo una promesa incumplida. <em>Presencia</em> es el intento de honrarla. No con declaraciones — con instituciones que funcionen, con transparencia real, con un modelo productivo que retenga el valor que generamos, con ciudadanos que participen porque tienen herramientas reales para hacerlo.
+      </p>
+
+      <p>
+        Este espacio existe para sembrar ideas antes de que exista un programa formal. Para que quien llegue aquí lo haga por las ideas y no por el momento electoral. Para construir sin apuro lo que debe durar. <strong>La soberanía popular no se declama — se practica.</strong> Empezamos aquí.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section class="contacto" id="contacto">
+  <h2 class="contacto-titulo revelar">Estar presente</h2>
+  <p class="contacto-sub revelar">Si algo de lo que leíste resonó, escribinos. No hay formulario de afiliación ni base de datos. Solo una conversación que puede empezar acá.</p>
+
+  <form class="contacto-form revelar" onsubmit="enviarForm(event)">
+    <input type="text" class="contacto-input" placeholder="Tu nombre" required>
+    <input type="email" class="contacto-input" placeholder="Tu correo" required>
+    <textarea class="contacto-input contacto-textarea" placeholder="¿Qué querés decir?"></textarea>
+    <button type="submit" class="contacto-btn">Enviar</button>
+  </form>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-marca">Presencia</div>
+  <div class="footer-cita">"Mi autoridad emana de vosotros y ella cesa ante vuestra presencia soberana." — Artigas</div>
+  <div class="footer-año">Uruguay · 2026</div>
+</footer>
+
+<!-- MODALES -->
+<div class="modal-overlay" id="modal-overlay" onclick="cerrarModal(event)">
+  <div class="modal" id="modal-contenido">
+    <button class="modal-cerrar" onclick="cerrarModal()">Cerrar ×</button>
+    <div id="modal-interior"></div>
+  </div>
+</div>
+
+<script>
+const reflexiones = {
+  r1: {
+    fecha: 'Junio 2026',
+    titulo: 'La camioneta y la carta de Oribe',
+    cuerpo: `
+      <p>En algún momento del siglo XIX, el presidente Manuel Oribe recibió de su amigo Larravide un recado de montura con tachones de oro y plata. Era un regalo valioso, dado con afecto genuino. Oribe lo devolvió.</p>
+      <p>En la carta que acompañó la devolución escribió algo que vale la pena leer despacio: <em>"El regalo porque es demasiado valioso y no conviene a mi decoro aceptarlo, ni a Ud. el hacerlo dado nuestras posiciones respectivas. No debo ni quiero quedar obligado a persona alguna del modo que me obligara la admisión del importante presente."</em></p>
+      <p>No había una ley que lo obligara. No había un organismo de contralor que lo vigilara. No había una Convención Interamericana contra la Corrupción ni un Código de Ética de la Función Pública. Había un principio entendido con claridad: <strong>cuando se ejerce el poder, aceptar un regalo de alguien en posición diferente crea una obligación. Y esa obligación es incompatible con el ejercicio honesto de la función pública.</strong></p>
+      <p>Hoy ese principio requiere leyes, organismos, convenciones internacionales, y aun así no alcanza. La polémica por la camioneta del presidente Orsi no es sobre si hubo o no corrupción en sentido técnico-jurídico. Es sobre algo más profundo: si quienes nos gobiernan entienden que la investidura cambia lo que es aceptable. Que lo que cualquier ciudadano puede hacer, quien ejerce el poder no puede.</p>
+      <p>Oribe lo entendía sin que nadie se lo explicara. Eso dice algo sobre él. Y dice algo sobre nosotros que hoy necesitemos tres páginas de normativa para llegar al mismo lugar.</p>
+      <p>La carta de Oribe es el mejor programa de transparencia que existe en la historia uruguaya. Cabe en un párrafo. Y tiene 175 años de anticipación.</p>
+    `
+  },
+  r2: {
+    fecha: 'Junio 2026',
+    titulo: 'El trabajo que no existe para el Estado',
+    cuerpo: `
+      <p>Uruguay construyó su identidad sobre el trabajo. El batllismo puso al trabajador en el centro del proyecto nacional. El primero de mayo no es solo un día de reivindicación — es una identidad colectiva que une al rural con el de la construcción, al empleado público con el privado.</p>
+      <p>Pero el mundo del trabajo cambió y el sistema político no lo vio.</p>
+      <p>Hay personas que trabajan y no existen para el Estado. El cuidador de un familiar con discapacidad que no puede salir a trabajar porque alguien tiene que estar. La mujer que mantiene una economía doméstica entera sin remuneración. El pescador artesanal que sale al mar antes del amanecer y vende su captura a un intermediario que se queda con el margen. El trabajador de cincuenta años con décadas de experiencia que pierde su empleo y el sistema lo llama desempleado como si sus conocimientos no valieran nada.</p>
+      <p><strong>Todos trabajan. Ninguno existe para el sistema.</strong></p>
+      <p>No es un olvido. Es una decisión de diseño. El sistema reconoce el trabajo que genera aportes al BPS. Todo lo demás es invisibilidad o excepción. Y la invisibilidad tiene consecuencias: sin reconocimiento no hay derechos, sin derechos no hay protección, sin protección no hay dignidad.</p>
+      <p>La violencia en Uruguay no viene de la nada. Viene en parte de esta exclusión de sentido. El que no tiene rol reconocido socialmente no es un delincuente por naturaleza — es alguien a quien el sistema le dijo que no existe y respondió en consecuencia.</p>
+      <p>Cambiar esto no requiere una revolución. Requiere una decisión: ampliar qué se entiende por contribución social. Reconocer que el trabajo es más ancho que la relación de dependencia formal. Que la sociedad necesita lo que muchas personas hacen aunque el mercado no lo pague.</p>
+      <p>El primer paso es nombrar lo que existe. El Estado que no ve no puede proteger.</p>
+    `
+  },
+  r3: {
+    fecha: 'Junio 2026',
+    titulo: 'La democracia no está en riesgo por la derecha',
+    cuerpo: `
+      <p>El discurso más repetido en los círculos progresistas latinoamericanos de los últimos años es que la democracia está amenazada por el avance de las derechas. Por los Milei, los Bolsonaro, los Trump del continente.</p>
+      <p>Hay algo de verdad en eso. Pero hay una amenaza más profunda y menos discutida: <strong>que el sistema político en su conjunto — izquierda y derecha juntos — acuerde en lo que importa para perpetuarse.</strong></p>
+      <p>La democracia representativa tiene un riesgo implícito que hasta ahora no se había hecho tan evidente: si los partidos que alternan en el poder comparten más intereses entre sí que con sus bases sociales, las elecciones se convierten en un circo que da legitimidad a un sistema que no cambia nada sustancial.</p>
+      <p>Los progresismos latinoamericanos llegaron al poder después de crisis profundas, con mandatos de transformación genuinos, y en la mayoría de los casos gobernaron redistribuyendo los frutos del modelo sin cambiar el modelo. Cuando los precios internacionales bajaron, no había nada estructural diferente debajo. Y entonces dijeron que no tenían mayorías parlamentarias para ir más lejos.</p>
+      <p>Lo que no dijeron es que hay un enorme margen de transformación que no requiere mayorías parlamentarias y que sistemáticamente no se usó. Porque usarlo hubiera incomodado a los mismos actores que financiaban las campañas, que controlaban los medios, que se sentaban a negociar los presupuestos.</p>
+      <p><em>La democracia no está en riesgo porque la derecha gana elecciones. Está en riesgo porque el sistema político completo aprendió a administrar la democracia sin honrarla.</em></p>
+      <p>La respuesta no es más izquierda ni más derecha. Es más ciudadanía. Más transparencia. Más participación real. Más instituciones que funcionen independientemente de quién las dirija. Eso es lo que Artigas entendía cuando decía que su autoridad cesaba ante la presencia soberana del pueblo.</p>
+      <p>La soberanía no se delega cada cinco años. Se ejerce todos los días. O no es soberanía.</p>
+    `
+  }
+};
+
+function abrirModal(id) {
+  const r = reflexiones[id];
+  if (!r) return;
+  document.getElementById('modal-interior').innerHTML = `
+    <div class="modal-fecha">${r.fecha}</div>
+    <h2 class="modal-titulo">${r.titulo}</h2>
+    <div class="modal-cuerpo">${r.cuerpo}</div>
+  `;
+  document.getElementById('modal-overlay').classList.add('abierto');
+  document.body.style.overflow = 'hidden';
+  return false;
+}
+
+function cerrarModal(e) {
+  if (e && e.target !== document.getElementById('modal-overlay') && !e.target.classList.contains('modal-cerrar')) return;
+  document.getElementById('modal-overlay').classList.remove('abierto');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') cerrarModal({ target: document.getElementById('modal-overlay') });
+});
+
+function enviarForm(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('.contacto-btn');
+  btn.textContent = 'Enviado ✓';
+  btn.style.borderColor = 'var(--ocre-claro)';
+  btn.style.color = 'var(--ocre-claro)';
+  setTimeout(() => {
+    btn.textContent = 'Enviar';
+    btn.style.borderColor = '';
+    btn.style.color = '';
+    e.target.reset();
+  }, 3000);
+}
+
+// Revelar elementos al hacer scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+document.querySelectorAll('.revelar').forEach(el => observer.observe(el));
+
+// Prevenir links vacíos
+document.querySelectorAll('a[href="#"]').forEach(a => {
+  a.addEventListener('click', e => e.preventDefault());
+});
+</script>
+</body>
+</html>
